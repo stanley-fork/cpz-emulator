@@ -231,8 +231,10 @@ else()
         src/emu_launcher_stubs.c)
 endif()
 add_dependencies(cardputer-emu lvgl lvgl_thorvg)
-# Export all symbols so dlopen'd apps can resolve LVGL functions
-if(APPLE)
+# Export all symbols so dlopen'd apps can resolve LVGL functions.
+# On Linux this adds -rdynamic so the whole-archive'd LVGL symbols land in
+# .dynsym (otherwise dlopen of libAPPLaunch fails: undefined symbol lv_*).
+if(APPLE OR (UNIX AND NOT APPLE))
     set_target_properties(cardputer-emu PROPERTIES ENABLE_EXPORTS ON)
 endif()
 
